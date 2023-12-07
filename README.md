@@ -16,15 +16,23 @@
 
 拿到Yi-6B大模型文件列表后，通过下面的函数逐个下载到当前目录下的"./download"目录，colab下载大模型速度是非常快的。如果是66B以上的大模型，改成并行下载会更快，这里是6B就没必要了。
 
+
+
+```python
 def download_file(repo_id,filenames):
     print(filenames)
     repo_name = repo_id.replace("/","---")
- 
+
     for filename in filenames:
         print(filename)
         out = hh.hf_hub_download(repo_id=repo_id,filename=filename,local_dir=f"./download/{repo_name}",local_dir_use_symlinks=False,force_download =True)
     out_path = f"./download/{repo_name}"
     return out_path
+```
+
+
+
+
 用huggingface_hub直接就拉到了这个速度，都不需要换hf_transfer了
 
 
@@ -32,12 +40,17 @@ def download_file(repo_id,filenames):
 3 大模型文件上传到阿里云
 这里用到aligo开源库，作者封装了很多细节代码，赞！通过下面的代码确认refresh_token是否可用。
 
+
+```python
 from aligo import Aligo
 refresh_token = "注意：改成自己的refresh_token"
 ali = Aligo(refresh_token=refresh_token)
 user = ali.get_user()  # 获取用户信息
 print(user.user_name, user.nick_name, user.phone)
 ll = ali.get_file_list()  # 获取网盘根目录文件列表
+```
+
+
 确认用户鉴权没问题之后，把刚下载到colab的大模型传到阿里云盘，快10G的文件，只要2分钟就传完了，如果是热门大模型，应该是秒传的。
 
 
